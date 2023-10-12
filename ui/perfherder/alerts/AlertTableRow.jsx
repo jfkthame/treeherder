@@ -15,7 +15,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { Link } from 'react-router-dom';
-import Badge from 'reactstrap/lib/Badge';
 
 import { createQueryParams } from '../../helpers/url';
 import {
@@ -403,6 +402,10 @@ export default class AlertTableRow extends React.Component {
       !alert.series_signature.tags.includes('interactive') &&
       !browsertimeBenchmarksTests.includes(alert.series_signature.suite) &&
       sxsTriggered;
+    // const showProfilerLinks =
+    //   alert.profile_url.endsWith('.zip') &&
+    //   alert.prev_profile_url.profile_url.endsWith('.zip');
+    // const showTools = showSideBySideLink || showProfilerLinks;
 
     const backfillStatusInfo = this.getBackfillStatusInfo(alert);
     let sherlockTooltip = backfillStatusInfo && backfillStatusInfo.message;
@@ -506,31 +509,48 @@ export default class AlertTableRow extends React.Component {
             />
           </div>
         </td>
-        {alertSummary.framework === browsertimeId && (
-          <td className="table-width-md">
-            {showSideBySideLink ? (
-              <span className="text-darker-info">
-                <a
-                  href={this.buildSideBySideLink()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-dark button btn border p-0 border-0 bg-transparent"
-                  aria-label="side-by-side"
-                >
-                  <FontAwesomeIcon
-                    title="Open side-by-side link"
-                    icon={faCirclePlay}
-                    data-testid={`alert ${alert.id.toString()} side-by-side icon`}
-                  />
-                </a>
-              </span>
-            ) : (
-              <Badge className="mb-1" color="light">
-                None
-              </Badge>
-            )}
-          </td>
-        )}
+        <td className="table-width-md">
+          {alertSummary.framework === browsertimeId && showSideBySideLink && (
+            <span className="text-darker-info">
+              <a
+                href={this.buildSideBySideLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-dark button btn border p-0 border-0 bg-transparent"
+                aria-label="side-by-side"
+              >
+                <FontAwesomeIcon
+                  title="Open side-by-side link"
+                  icon={faCirclePlay}
+                  data-testid={`alert ${alert.id.toString()} side-by-side icon`}
+                />
+              </a>
+            </span>
+          )}
+          <span className="text-darker-info">
+            P(
+            <a
+              href={`https://profiler.firefox.com/from-url/${alert.prev_profile_url}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-dark button btn border p-0 border-0 bg-transparent"
+              aria-label="side-by-side"
+            >
+              before
+            </a>
+            /
+            <a
+              href={`https://profiler.firefox.com/from-url/${alert.profile_url}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-dark button btn border p-0 border-0 bg-transparent"
+              aria-label="side-by-side"
+            >
+              after
+            </a>
+            )
+          </span>
+        </td>
         <td className="table-width-lg">
           <div className="information-container">
             <div className="option">
